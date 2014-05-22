@@ -68,9 +68,11 @@ create tidy data
 ```{r}
 tidy.data <- melt(merged.tables, id = c("label", "subject"), na.rm = TRUE)
 tidy.data <- dcast(tidy.data, label + subject ~ variable, mean)
+colnames(tidy.data)[1] <- "activity"
 ```
 
-save tidy data as a csv file
+save tidy data as a csv file and txt file to upload
 ```{r}
-write.csv(tidy.data, "tidydata.csv")
+write.csv(tidy.data, "tidydata.csv", row.names = FALSE)
+write.table(tidy.data, "tidydata.txt", sep = " ", row.names = FALSE)
 ```
