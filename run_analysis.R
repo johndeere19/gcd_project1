@@ -48,5 +48,5 @@ tidy.data <- melt(merged.tables, id = c("label", "subject"), na.rm = TRUE)
 tidy.data <- dcast(tidy.data, label + subject ~ variable, mean)
 
 # save tidy data as a csv file
-write.csv(tidy.data, "tidydata.csv")
+write.csv(tidy.data, "tidydata.csv", row.names = FALSE)
 
