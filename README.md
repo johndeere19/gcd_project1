@@ -2,6 +2,14 @@ run_analysis.R Readme
 ========================================================
 ## Getting and Cleaning Data Course Project (May 2014)
 
+## Overview
+
+All features with either mean or std (not case sensitive) in the text were selected for this analysis.
+
+In order to clean up the features, all non-alphanumeric characters were removed and then each remaining string was changed to all lower-case characters.
+
+## Code & Descriptions
+
 Read the labels and activity labels. Ensure the column names are all correct.
 ```{r}
 training.labels <- read.table("./train/y_train.txt")
