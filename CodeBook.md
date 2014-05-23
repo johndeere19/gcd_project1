@@ -2,6 +2,19 @@ run_analysis.R CodeBook
 ========================================================
 ## Getting and Cleaning Data Course Project (May 2014)
 
+## Overview
+The first and most obvious step was to read in all the data required for this project including the y_train.txt, y_test.txt, activity_labels.txt, x_train.txt, x_test.txt, subject_train.txt, subject_test.txt, features.txt.
+
+The next step was doing some cleanup including properly labeling the column names. Once that was complete, the features were cleaned up by removing any non-alphanumerical characters from the vector, using the results to name the columns of the test and training data.
+
+Following the above steps, the subjects were binded to the beginning front of both the training and the test data. The labels were then joined with the activities and those labels were binded to the training and test data. 
+
+The training and test data were then merged together, ensuring that all colnames are lower case and then subset to be only those that contain the string "mean" or "std." Then order them by subject # and activity id. Finally, remove the id column so that only the necessary data remains.
+
+The data was then "melted" and then reshaped using dcast to produce a clean and tidy data set with a single row for each subject/activity combination and the average for each measurement. Finally, column 1 was renamed to be more descriptive and then data was saved as both a csv and txt file.
+
+## Code & Descriptions
+
 Read the labels and activity labels. Ensure the column names are all correct.
 ```{r}
 training.labels <- read.table("./train/y_train.txt")

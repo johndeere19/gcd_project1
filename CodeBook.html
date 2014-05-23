@@ -183,7 +183,21 @@ hljs.initHighlightingOnLoad();
 
 <h2>Getting and Cleaning Data Course Project (May 2014)</h2>
 
-<p>read labels, activity labels and ensure the column names are all correct</p>
+<h2>Overview</h2>
+
+<p>The first and most obvious step was to read in all the data required for this project including the y_train.txt, y_test.txt, activity_labels.txt, x_train.txt, x_test.txt, subject_train.txt, subject_test.txt, features.txt.</p>
+
+<p>The next step was doing some cleanup including properly labeling the column names. Once that was complete, the features were cleaned up by removing any non-alphanumerical characters from the vector, using the results to name the columns of the test and training data.</p>
+
+<p>Following the above steps, the subjects were binded to the beginning front of both the training and the test data. The labels were then joined with the activities and those labels were binded to the training and test data. </p>
+
+<p>The training and test data were then merged together, ensuring that all colnames are lower case and then subset to be only those that contain the string &ldquo;mean&rdquo; or &ldquo;std.&rdquo; Then order them by subject # and activity id. Finally, remove the id column so that only the necessary data remains.</p>
+
+<p>The data was then &ldquo;melted&rdquo; and then reshaped using dcast to produce a clean and tidy data set with a single row for each subject/activity combination and the average for each measurement. Finally, column 1 was renamed to be more descriptive and then data was saved as both a csv and txt file.</p>
+
+<h2>Code &amp; Descriptions</h2>
+
+<p>Read the labels and activity labels. Ensure the column names are all correct.</p>
 
 <pre><code class="r">training.labels &lt;- read.table(&quot;./train/y_train.txt&quot;)
 colnames(training.labels) &lt;- &quot;id&quot;
@@ -193,49 +207,49 @@ activity.labels &lt;- read.table(&quot;activity_labels.txt&quot;)
 colnames(activity.labels) &lt;- c(&quot;id&quot;, &quot;label&quot;)
 </code></pre>
 
-<p>read data tables</p>
+<p>Read data tables</p>
 
 <pre><code class="r">training.data &lt;- read.table(&quot;./train/X_train.txt&quot;)
 test.data &lt;- read.table(&quot;./test/X_test.txt&quot;)
 </code></pre>
 
-<p>read subject tables</p>
+<p>Read subject tables</p>
 
 <pre><code class="r">training.subject &lt;- read.table(&quot;./train/subject_train.txt&quot;)
 test.subject &lt;- read.table(&quot;./test/subject_test.txt&quot;)
 </code></pre>
 
-<p>read and clean the features text</p>
+<p>Read and clean the features text</p>
 
 <pre><code class="r">features &lt;- read.table(&quot;./features.txt&quot;)
 clean.features &lt;- gsub(&quot;[^[:alnum:]]&quot;, &quot;&quot;, features$V2)
 </code></pre>
 
-<p>assign names to the columns of each data set</p>
+<p>Assign the features to the columns of each data set</p>
 
 <pre><code class="r">colnames(training.data) &lt;- clean.features
 colnames(test.data) &lt;- clean.features
 </code></pre>
 
-<p>add the subject to the data sets</p>
+<p>Add the subject to the data sets</p>
 
 <pre><code class="r">training.data &lt;- cbind(training.subject, training.data)
 test.data &lt;- cbind(test.subject, test.data)
 </code></pre>
 
-<p>combine the activity labels to the training labels and bind the results to each of the data sets</p>
+<p>Combine the activity labels to the training labels and bind the results to each of the data sets</p>
 
 <pre><code class="r">training.labels &lt;- join(training.labels, activity.labels, by = &quot;id&quot;)
 test.labels &lt;- join(test.labels, activity.labels, by = &quot;id&quot;)
 </code></pre>
 
-<p>bind the labels to the tables</p>
+<p>Bind the labels to the tables</p>
 
 <pre><code class="r">training.data &lt;- cbind(training.labels, training.data)
 test.data &lt;- cbind(test.labels, test.data)
 </code></pre>
 
-<p>merge tables together, ensure that all colnames are lower case and then subset to be only those that contain the string &ldquo;mean&rdquo; or &ldquo;std&rdquo; then order them by subject # and activity id. Finally, remove the id column.</p>
+<p>Merge the training and test tables together. Ensure that all colnames are lower case and then subset to be only those that contain the string &ldquo;mean&rdquo; or &ldquo;std&rdquo; then order them by subject # and activity id. Finally, remove the id column.</p>
 
 <pre><code class="r">merged.tables &lt;- rbind(training.data, test.data)
 colnames(merged.tables)[3] &lt;- &quot;subject&quot;
@@ -249,11 +263,13 @@ merged.tables &lt;- merged.tables[,-1]
 
 <pre><code class="r">tidy.data &lt;- melt(merged.tables, id = c(&quot;label&quot;, &quot;subject&quot;), na.rm = TRUE)
 tidy.data &lt;- dcast(tidy.data, label + subject ~ variable, mean)
+colnames(tidy.data)[1] &lt;- &quot;activity&quot;
 </code></pre>
 
-<p>save tidy data as a csv file</p>
+<p>save tidy data as a csv file and txt file to upload</p>
 
-<pre><code class="r">write.csv(tidy.data, &quot;tidydata.csv&quot;)
+<pre><code class="r">write.csv(tidy.data, &quot;tidydata.csv&quot;, row.names = FALSE)
+write.table(tidy.data, &quot;tidydata.txt&quot;, sep = &quot; &quot;, row.names = FALSE)
 </code></pre>
 
 </body>
